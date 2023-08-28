@@ -6,15 +6,24 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var timer = new System.Timers.Timer(2000);
+        var timer = new System.Timers.Timer(60*1000);
         timer.Elapsed += OnEventExecution;
-        timer.Start();       
+        timer.Start();
+        
+        Console.ReadLine();
     }
 
     public static void OnEventExecution(Object? sender, ElapsedEventArgs eventArgs)
     {
-        ReadingDb.MySqlReader();
-        
+        try
+        {
+            ReadingDb.MySqlReader();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
+
     }
 }
 
