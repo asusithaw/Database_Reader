@@ -2,13 +2,80 @@
 namespace Database_Reader
 {
     public class ReadingDb
-    {        
-        public static void MySqlReader()
+    {
+        public static string GetConnectionString()
         {
-            string connectionString = "datasource=localhost;port=3306;username=root;password=Susitha@1997;";
-            string output = @"D:\\ASP.net - Winforms\\output.txt";
+            try
+            {
+                Console.WriteLine("Enter the connection String");
+                string? input = Console.ReadLine()?.Trim(); // Use null conditional operator to handle possible null input
+                if (input != null)
+                {
+                    return input;
+                }
+                else
+                {
+                    Console.WriteLine("Connection string was not provided.");
+                    return ""; // Or handle the absence of connection string differently
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in GetConnectionString: " + ex.Message);
+                throw;
+            }
+        }
+
+
+        public static string GetOutputLocation()
+        {
+            try
+            {
+                Console.WriteLine("Enter the output location with txt file(Text file should be included in the path, like output.txt)");
+                string? input = Console.ReadLine(); // input might be null
+
+                string output = input ?? string.Empty; // If input is null, use an empty string
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in GetOutputLocation: " + ex.Message);
+                throw;
+            }
+        }
+
+
+        public static string[] GetSqlQueries()
+        {
+            try
+            {
+                Console.WriteLine("Enter the SQL queries comma separated");
+                string? sqlInput = Console.ReadLine(); // sqlInput might be null
+
+                if (sqlInput != null)
+                {
+                    string[] sqlQueries = sqlInput.Split(",");
+                    return sqlQueries;
+                }
+                else
+                {
+                    Console.WriteLine("No SQL queries provided.");
+                    return Array.Empty<string>(); // Return an empty array or handle it differently
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in GetSqlQueries: " + ex.Message);
+                throw;
+            }
+        }
+
+
+
+        public static void MySqlReader(string connectionString, string outputLocation, string[] sqlQueries)
+        {
             string currentDateTime = DateTime.Now.ToString();
-            var sqlQueries = new string[] { "SHOW STATUS LIKE '%lock%';", "SHOW STATUS LIKE '%current_waits%';", "SHOW GLOBAL STATUS;" };
 
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
@@ -32,7 +99,7 @@ namespace Database_Reader
                                 allData += line + Environment.NewLine;
                             }
                             allData = caption + Environment.NewLine + "Value   " + "Variable Name" + Environment.NewLine + allData;
-                            File.AppendAllText(output, allData);
+                            File.AppendAllText(outputLocation, allData);
                         }
                     }
                 }
